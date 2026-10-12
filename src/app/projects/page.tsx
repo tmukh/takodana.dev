@@ -87,6 +87,58 @@ export default function Projects() {
             </ul>
           </article>
         </div>
+
+        <section id="earlier" aria-labelledby="ew" className={s.section}>
+          <h2 id="ew" className="eyebrow" style={{ marginBottom: 20 }}>Earlier work</h2>
+          <div className={s.grid}>
+            <article aria-labelledby="fr" className={`card ${s.cardBody}`}>
+              <span className={s.status} style={{ color: "var(--muted)" }}>Rust · PyO3 · Rayon</span>
+              <h3 id="fr">Fainder-Redone</h3>
+              <p>
+                My master&apos;s thesis (DIMA, TU Berlin, graded 1.7): the query phase of Fainder, a distribution-aware dataset
+                search engine from VLDB 2024, rebuilt in Rust. Every optimisation sits behind its own Cargo feature flag and
+                was measured on its own with hardware performance counters on a two-socket Sapphire Rapids server.
+              </p>
+              <div className={s.linkRow}>
+                <a href="https://github.com/tmukh/Fainder-Redone">Repository</a>
+              </div>
+            </article>
+            <article aria-labelledby="aws" className={`card ${s.cardBody}`}>
+              <span className={s.status} style={{ color: "var(--muted)" }}>Terraform · AWS · personal lab</span>
+              <h3 id="aws">A second environment on AWS</h3>
+              <p>
+                The homelab&apos;s k3s setup rebuilt on AWS with Terraform: a VPC, least-privilege security groups, and EC2
+                bootstrapped with cloud-init. IMDSv2, an encrypted volume, state kept out of Git, short-lived STS
+                credentials, and everything destroyed after each session.
+              </p>
+              <div className={s.linkRow}>
+                <a href="https://github.com/tmukh/homelab-dev">Repository</a>
+              </div>
+            </article>
+            <article aria-labelledby="arc" className={`card ${s.cardBody}`}>
+              <span className={s.status} style={{ color: "var(--muted)" }}>Python · Docker</span>
+              <h3 id="arc">ARCXplore</h3>
+              <p>
+                A Python tool that turns ARC research file systems into portable Docker containers: it parses the directory
+                structure, resolves dependencies and generates the Dockerfile. Used by more than 20 researchers.
+              </p>
+              <div className={s.linkRow}>
+                <a href="https://github.com/tmukh/ds2dc">Repository</a>
+              </div>
+            </article>
+            <article aria-labelledby="ide" className={`card ${s.cardBody}`}>
+              <span className={s.status} style={{ color: "var(--muted)" }}>Java · open source</span>
+              <h3 id="ide">IDEasy contributions</h3>
+              <p>
+                Features and toolchain integrations for IDEasy, a Java CLI that sets up reproducible developer environments,
+                through public pull requests and maintainer review.
+              </p>
+              <div className={s.linkRow}>
+                <a href="https://github.com/devonfw/IDEasy">Repository</a>
+              </div>
+            </article>
+          </div>
+        </section>
       </main>
       <SiteFooter />
     </>

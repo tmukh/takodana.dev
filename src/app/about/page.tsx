@@ -5,12 +5,17 @@ import { contact, experience } from "@/data/site";
 
 export const metadata: Metadata = { title: "About" };
 
+// Grouped as in the master CV. "Personal lab" marks what I run myself rather than in a job.
 const tools = [
-  ["Platform", "Kubernetes (k3s), Argo CD, Helm, Kustomize, NetworkPolicies, Docker, GitHub Actions, Ansible, Terraform"],
-  ["Operations (personal lab)", "Prometheus, Grafana, Alertmanager, Loki, SLOs and error budgets, CloudNativePG backup and restore, Cloudflare Tunnel"],
-  ["Languages", "Python, Java and Spring Boot, TypeScript, Bash, C++, Rust"],
-  ["AI engineering", "Embeddings and hybrid retrieval (pgvector), retrieval evaluation (nDCG, recall, LLM judges), structured LLM output, Langfuse"],
-  ["Spoken", "Arabic (native), German, English, Hebrew (B1)"],
+  ["Platform", "Kubernetes (k3s), Argo CD (app of apps), Helm, Kustomize, Sealed Secrets, NetworkPolicies, Docker, ghcr.io"],
+  ["Automation and CI/CD", "Terraform (STACKIT in a team, AWS in a personal lab), Ansible, Bash, GitHub Actions, GitLab CI, Jenkins"],
+  ["Operations", "Linux, Windows Server, Checkmk, incident response and root-cause analysis, backup and recovery, TCP/IP, DNS, TLS"],
+  ["Observability (personal lab)", "Prometheus, Grafana, Alertmanager, Loki, SLOs and burn-rate alerts, CloudNativePG backups with restore drills"],
+  ["AI engineering", "Embeddings and hybrid retrieval (pgvector, reciprocal-rank fusion), retrieval evaluation (nDCG, recall, LLM judges), structured LLM output, Ollama, Langfuse"],
+  ["Backend and frontend", "Java, Spring Boot, microservices, REST, SOAP, OAuth2, SAML, Keycloak, Oracle, SQL, TypeScript, Node.js, Angular, React, Flutter"],
+  ["Systems and performance", "Rust (Rayon, PyO3), C++, stream processing, profiling with hardware performance counters, ablation studies, Apache Spark"],
+  ["Cloud", "AWS (personal lab: EC2, VPC, IAM/STS), STACKIT, Google Cloud (Firebase, serverless)"],
+  ["Spoken", "Arabic (native), German (C1), English (C1), Hebrew (B1)"],
 ];
 
 export default function About() {
@@ -22,12 +27,13 @@ export default function About() {
           <div style={{ flex: "999 1 520px", minWidth: 0, display: "flex", flexDirection: "column", gap: 18 }}>
             <h1 className={s.title}>About</h1>
             <p className={s.lede} style={{ maxWidth: 720 }}>
-              I&apos;m a software engineer in Berlin moving towards platform engineering and SRE, with a second foot in AI
-              engineering. I&apos;ve kept servers at 99.9% for a federal agency, built Java microservices for public-sector
-              clients, and in my own time I run the homelab and retrieval system on this site.
+              I&apos;m a software engineer in Berlin moving into platform engineering and SRE, with a second foot in AI
+              engineering. I&apos;ve kept federal police systems at 99.9% through a data-centre migration, built Java
+              microservices for a federal agency, and written C++ and Rust where latency mattered. In my own time I run the
+              homelab, and the retrieval system on top of it, that this site describes.
             </p>
           </div>
-          <a className="button primary" href={contact.cv}>Download CV (PDF)</a>
+          <a className="button primary" href={`mailto:${contact.email}?subject=CV%20request`}>Ask for my CV</a>
         </section>
 
         <section aria-labelledby="exp" className={s.section}>
@@ -66,7 +72,7 @@ export default function About() {
             </div>
           </section>
           <section aria-labelledby="tools">
-            <h2 id="tools" className="eyebrow" style={{ marginBottom: 20 }}>Tools I&apos;ve used for real</h2>
+            <h2 id="tools" className="eyebrow" style={{ marginBottom: 20 }}>Skills</h2>
             <dl style={{ margin: 0, display: "flex", flexDirection: "column", gap: 14 }}>
               {tools.map(([k, v]) => (
                 <div key={k}>
