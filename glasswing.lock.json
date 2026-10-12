@@ -1,0 +1,11 @@
+{
+  "repo": "tmukh/glasswing",
+  "release": "v0.1.0",
+  "files": {
+    "glasswing_wasm.js": { "asset": "glasswing_wasm.js", "sha256": "pending" },
+    "glasswing_wasm_bg.wasm": { "asset": "glasswing_wasm_bg.wasm", "sha256": "pending" },
+    "worker.js": { "asset": "worker.js", "sha256": "pending" },
+    "tokenizer.json": { "asset": "tokenizer.json", "sha256": "pending" },
+    "model.bin": { "asset": "model-f16.safetensors", "sha256": "pending" }
+  }
+}

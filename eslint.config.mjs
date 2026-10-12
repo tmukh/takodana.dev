@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // glasswing release files, fetched at build time (scripts/fetch-glasswing.mjs)
+    "public/glasswing/**",
   ]),
 ]);
 

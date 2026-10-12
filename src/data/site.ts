@@ -105,6 +105,27 @@ export const nightSkyMilestones = [
   { id: "M6", done: false, text: "Experiments and write-up" },
 ];
 
+export const glasswingMilestones = [
+  { id: "M0", done: true, text: "Rust workspace, CI" },
+  { id: "M1", done: true, text: "BPE tokenizer, reference model, golden fixtures" },
+  { id: "M2", done: true, text: "Rust forward pass, parity with PyTorch" },
+  { id: "M3", done: true, text: "Trained on TinyStories, KV cache, sampling" },
+  { id: "M4", done: true, text: "WebAssembly engine, f16 weights" },
+  { id: "M5", done: true, text: "This visualization" },
+  { id: "M6", done: false, text: "Interpretability: ablation, logit lens, a circuit" },
+  { id: "M7", done: false, text: "A real small model, served on k3s" },
+];
+
+// Measured numbers shown on the glasswing page (glasswing/docs/log.md has the sources).
+export const glasswingStats = {
+  params: "15.7M",
+  valLoss: "TBD",
+  trainTokens: "1.3B",
+  trainHours: "TBD",
+  download: "31.5 MB",
+  nativeTps: "~300",
+};
+
 export type Role = { when: string; title: string; text: string };
 
 export const experience: Role[] = [
