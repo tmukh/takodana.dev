@@ -24,6 +24,7 @@ const PROMPTS = [
 type Status = "idle" | "loading" | "ready" | "running" | "error";
 
 function show(text: string) {
+  if (text === "<|endoftext|>") return "⟨end of story⟩";
   return text.replace(/\n/g, "↵\n");
 }
 
