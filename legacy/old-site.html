@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Takodana — Tarik's projects</title>
+<meta name="description" content="Things I build and use every day. Languages, physics, and the software in between.">
+<meta name="color-scheme" content="light dark">
+
+<!--
+  A single file, on purpose. No build step, no dependencies, nothing to
+  npm-install in two years when you want to add a fourth project. Drop it on
+  Cloudflare Pages and it is live.
+
+  Everything you will actually want to edit is in the SITE and PROJECTS
+  constants at the top of the script. The rest is machinery.
+-->
+
+<style>
+:root{
+  /* Shared with Chitalka's reader, deliberately. The domain should feel like
+     one thing rather than a folder of unrelated apps. */
+  --paper:oklch(0.975 0.008 85); --field:oklch(0.995 0.004 85);
+  --ink:oklch(0.300 0.012 60);   --ink-2:oklch(0.500 0.012 65);
+  --ink-3:oklch(0.665 0.010 70); --rule:oklch(0.905 0.008 80);
+  --wash:oklch(0.945 0.021 82);  --wash-2:oklch(0.905 0.038 78);
+  --accent:oklch(0.505 0.085 232);
+  --live:oklch(0.560 0.095 155);
+
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;
+
+  --r-sm:6px; --r-md:10px; --r-lg:16px;
+  --measure:66ch;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:oklch(0.205 0.008 85); --field:oklch(0.238 0.006 85);
+  --ink:oklch(0.885 0.010 85);   --ink-2:oklch(0.705 0.010 80);
+  --ink-3:oklch(0.545 0.010 80); --rule:oklch(0.305 0.008 80);
+  --wash:oklch(0.268 0.018 80);  --wash-2:oklch(0.330 0.032 78);
+  --accent:oklch(0.720 0.085 232);
+  --live:oklch(0.720 0.105 155);
+}}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline; text-underline-offset:3px}
+.mono{font-family:var(--mono)}
+.wrap{max-width:940px; margin:0 auto; padding:0 24px}
+
+/* ── masthead ─────────────────────────────────────────────────────────── */
+
+header{padding:64px 0 28px}
+h1{
+  font-family:var(--serif); font-weight:normal;
+  font-size:clamp(34px,7vw,52px); line-height:1.06;
+  margin:0 0 14px; letter-spacing:-0.015em;
+}
+.tagline{
+  max-width:var(--measure); margin:0; color:var(--ink-2);
+  font-size:clamp(16px,2.3vw,18px);
+}
+.eyebrow{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 18px;
+}
+
+/* ── the orrery ───────────────────────────────────────────────────────── */
+
+.orrery{
+  position:relative; margin:34px 0 8px;
+  border:1px solid var(--rule); border-radius:var(--r-lg);
+  background:var(--field); overflow:hidden;
+  aspect-ratio:16/9; min-height:300px;
+}
+@media (max-width:620px){.orrery{aspect-ratio:1/1; min-height:0}}
+.orrery canvas{display:block; width:100%; height:100%; cursor:crosshair; touch-action:none}
+.orrery.grabbing canvas{cursor:grabbing}
+
+.hud{
+  position:absolute; left:14px; bottom:12px; pointer-events:none;
+  font-family:var(--mono); font-size:11px; line-height:1.7;
+  color:var(--ink-3); letter-spacing:.02em;
+}
+.hud b{color:var(--ink-2); font-weight:normal}
+
+.hint{
+  position:absolute; right:14px; bottom:12px;
+  font-family:var(--mono); font-size:11px; color:var(--ink-3);
+  letter-spacing:.02em; text-align:right; pointer-events:none;
+  transition:opacity .5s ease;
+}
+.reset{
+  position:absolute; right:12px; top:12px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  color:var(--ink-3); background:var(--paper);
+  border:1px solid var(--rule); border-radius:var(--r-sm);
+  padding:5px 10px; cursor:pointer; opacity:0;
+  transition:opacity .25s ease;
+}
+.reset.on{opacity:1}
+.reset:hover{color:var(--ink); border-color:var(--ink-3)}
+
+.tilt{
+  position:absolute; left:14px; top:12px;
+  display:flex; align-items:center; gap:10px;
+  font-size:11px; color:var(--ink-3); letter-spacing:.02em;
+  background:var(--paper); border:1px solid var(--rule);
+  border-radius:var(--r-sm); padding:5px 10px;
+}
+.tilt span{min-width:96px}
+.tilt input[type=range]{
+  -webkit-appearance:none; appearance:none; width:84px; height:14px;
+  background:transparent; cursor:ew-resize; margin:0;
+}
+.tilt input[type=range]::-webkit-slider-runnable-track{
+  height:1px; background:var(--ink-3)}
+.tilt input[type=range]::-moz-range-track{height:1px; background:var(--ink-3)}
+.tilt input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:11px; height:11px; border-radius:50%;
+  background:var(--accent); margin-top:-5px}
+.tilt input[type=range]::-moz-range-thumb{
+  width:11px; height:11px; border:0; border-radius:50%; background:var(--accent)}
+@media (max-width:520px){.tilt span{display:none}}
+
+.tip{
+  position:absolute; pointer-events:none; z-index:3;
+  background:var(--paper); border:1px solid var(--rule);
+  border-radius:var(--r-sm); padding:7px 10px;
+  font-family:var(--mono); font-size:11px; line-height:1.6;
+  color:var(--ink-2); white-space:nowrap;
+  box-shadow:0 4px 14px oklch(0 0 0 / .10);
+  opacity:0; transform:translateY(3px); transition:opacity .12s, transform .12s;
+}
+.tip.on{opacity:1; transform:translateY(0)}
+.tip .n{color:var(--ink); display:block; font-family:var(--sans); font-size:12.5px}
+
+/* ── sections ─────────────────────────────────────────────────────────── */
+
+section{padding:52px 0}
+.rule{border:0; border-top:1px solid var(--rule); margin:0}
+h2{
+  font-family:var(--mono); font-size:11px; font-weight:normal;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);
+  margin:0 0 26px;
+}
+
+.projects{display:grid; gap:1px; background:var(--rule);
+  border:1px solid var(--rule); border-radius:var(--r-md); overflow:hidden}
+.card{
+  background:var(--paper); padding:22px 22px 20px;
+  display:grid; grid-template-columns:1fr auto; gap:4px 16px;
+  align-items:start; text-decoration:none; color:inherit;
+  transition:background .15s ease;
+}
+a.card:hover{background:var(--wash); text-decoration:none}
+.card.idle{color:var(--ink-3)}
+.card h3{
+  margin:0; font-family:var(--serif); font-weight:normal;
+  font-size:21px; letter-spacing:-0.005em; color:var(--ink);
+}
+.card.idle h3{color:var(--ink-3)}
+.card p{margin:6px 0 0; grid-column:1/-1; max-width:56ch;
+  color:var(--ink-2); font-size:15px}
+.card.idle p{color:var(--ink-3)}
+.card .where{grid-column:1/-1; margin-top:10px;
+  font-family:var(--mono); font-size:11px; color:var(--ink-3);
+  letter-spacing:.02em}
+
+.status{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:6px; color:var(--ink-3);
+  padding-top:5px;
+}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--ink-3);
+  flex:0 0 auto}
+.status.live{color:var(--live)} .status.live .dot{background:var(--live)}
+.status.live .dot{box-shadow:0 0 0 0 currentColor; animation:pulse 2.6s ease-out infinite}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 oklch(0.560 0.095 155 / .45)}
+  70%{box-shadow:0 0 0 7px oklch(0.560 0.095 155 / 0)}
+  100%{box-shadow:0 0 0 0 oklch(0.560 0.095 155 / 0)}
+}
+
+/* ── curiosities ──────────────────────────────────────────────────────── */
+
+.notes{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:26px}
+.note h3{
+  margin:0 0 8px; font-family:var(--serif); font-weight:normal;
+  font-size:18px; letter-spacing:-0.005em;
+}
+.note p{margin:0; color:var(--ink-2); font-size:14.5px}
+.note .fig{
+  margin:0 0 14px; border:1px solid var(--rule); border-radius:var(--r-sm);
+  background:var(--field); overflow:hidden;
+}
+.note .fig svg, .note .fig canvas{display:block; width:100%; height:auto}
+.zipf-read{
+  font-family:var(--mono); font-size:11px; color:var(--ink-3);
+  padding:6px 10px; border-top:1px solid var(--rule); min-height:29px;
+}
+.zipf-read b{color:var(--ink-2); font-weight:normal}
+
+footer{padding:44px 0 64px; color:var(--ink-3); font-size:13.5px}
+footer .mono{font-size:11px; letter-spacing:.02em}
+
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow" id="eyebrow">takodana.dev · software · languages · physics</p>
+    <h1 id="title">Tarik</h1>
+    <p class="tagline" id="tagline">
+      I build small, sharp tools for things I do every day — mostly learning
+      languages, mostly by reading. Below is what runs, and what is coming.
+    </p>
+  </header>
+
+  <!-- The projects are the bodies. Same object, two views: this one moves. -->
+  <div class="orrery" id="orrery">
+    <canvas id="sky" aria-label="An orbital diagram of this site's projects. The same projects are listed as text below."></canvas>
+    <div class="hud mono" id="hud"></div>
+    <div class="hint mono" id="hint">hold anywhere to bend the orbits</div>
+    <button class="reset mono" id="reset" type="button">reset orbits</button>
+    <label class="tilt mono" for="tiltRange">
+      <span id="tiltLabel">inclination 24°</span>
+      <input id="tiltRange" type="range" min="0" max="82" value="24" step="1"
+             aria-label="Viewing inclination, in degrees">
+    </label>
+    <div class="tip" id="tip" role="status"></div>
+  </div>
+
+</div>
+
+<div class="wrap">
+  <section>
+    <h2>Projects</h2>
+    <div class="projects" id="projects"></div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <h2>Things I keep thinking about</h2>
+    <div class="notes">
+
+      <article class="note">
+        <div class="fig">
+          <svg viewBox="0 0 300 150" id="zipf" role="img"
+               aria-label="A rank-frequency curve following Zipf's law, plotted on logarithmic axes.">
+            <g id="zipf-grid"></g>
+            <path id="zipf-curve" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+            <line id="zipf-mark" y1="14" y2="126" stroke="var(--ink-3)"
+                  stroke-width="1" stroke-dasharray="2 3" opacity="0"/>
+            <circle id="zipf-dot" r="3.2" fill="var(--accent)" opacity="0"/>
+            <rect x="0" y="0" width="300" height="150" fill="transparent" id="zipf-hit"/>
+          </svg>
+          <div class="zipf-read mono" id="zipf-read">rank × frequency ≈ constant</div>
+        </div>
+        <h3>Zipf's law</h3>
+        <p>
+          The <em>n</em>-th most common word turns up about 1/<em>n</em> as
+          often as the first. It holds across every language anyone has
+          checked, and nobody fully agrees why. It is also the thing that lets
+          a reader decide which unknown word in a paragraph is worth learning.
+        </p>
+      </article>
+
+      <article class="note">
+        <h3>Case, and what it costs</h3>
+        <p>
+          Russian marks six cases on almost everything; German marks four and
+          hides them in the article. Same job, opposite strategy — and the
+          difference decides how you have to teach either one. Half of what I
+          build is an argument with that fact.
+        </p>
+      </article>
+
+      <article class="note">
+        <h3>Two-body problems that aren't</h3>
+        <p>
+          Two masses have a closed-form solution. Add a third and it is
+          provably chaotic — no formula, only integration. The diagram above
+          is doing exactly that, forty times a second, which is why holding
+          the pointer down never quite gives the same orbit twice.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <footer>
+    <p id="footnote">
+      Named after a waystation, which is all this page is — everything on it
+      is somewhere else. The projects run on a machine in my flat, so if one
+      is unreachable it is probably having a nap.
+    </p>
+    <p class="mono" id="contact"></p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   EDIT HERE. Everything below this block is machinery.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const SITE = {
+  domain: "takodana.dev",
+  email:  "",                      // ← optional; left out entirely if empty
+  github: "",                      // ← optional, e.g. "github.com/tarik"
+};
+
+const PROJECTS = [
+  {
+    name: "Chitalka",
+    blurb: "An immersion reading trainer. Every morning it finds Russian or " +
+           "German writing pitched at exactly what you can almost read, then " +
+           "mines the words you are missing straight into Anki.",
+    host: "chitalka",              // → chitalka.<domain>
+    status: "live",
+    // Orbital elements. `a` is the semi-major axis as a fraction of the
+    // frame, `e` the eccentricity (0 is a circle), `inc` the tilt of this
+    // orbit's plane in degrees and `node` where it crosses the reference
+    // plane. Nothing stops you making these silly, but 0 ≤ e < 0.7 stays
+    // readable and real planets sit within about 7° of each other.
+    a: 0.30, e: 0.06, phase: 0.4, size: 6.5, inc: 0, node: 0,
+  },
+  {
+    name: "—",
+    blurb: "Slot two. Not started.",
+    host: null,
+    status: "planned",
+    a: 0.50, e: 0.14, phase: 2.6, size: 4.5, inc: 6, node: 0.9,
+  },
+  {
+    name: "—",
+    blurb: "Slot three. Not started.",
+    host: null,
+    status: "planned",
+    a: 0.70, e: 0.10, phase: 4.9, size: 4, inc: -4, node: 2.3,
+  },
+];
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+
+const $ = (id) => document.getElementById(id);
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ── the text list ────────────────────────────────────────────────────────
+   Rendered from the same array the diagram uses, so the two can never
+   disagree, and built as real links so the page works with the canvas
+   switched off, scripted away, or read aloud. */
+
+function urlFor(p) {
+  return p.host ? `https://${p.host}.${SITE.domain}` : null;
+}
+
+function renderProjects() {
+  const host = $("projects");
+  host.innerHTML = "";
+  for (const p of PROJECTS) {
+    const url = urlFor(p);
+    const live = p.status === "live";
+    const el = document.createElement(url ? "a" : "div");
+    el.className = "card" + (live ? "" : " idle");
+    if (url) { el.href = url; }
+    el.innerHTML = `
+      <h3>${escapeHtml(p.name)}</h3>
+      <span class="status ${live ? "live" : ""}"><i class="dot"></i>${
+        escapeHtml(p.status)}</span>
+      <p>${escapeHtml(p.blurb)}</p>
+      ${url ? `<span class="where mono">${escapeHtml(
+        url.replace("https://", ""))}</span>` : ""}`;
+    host.appendChild(el);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[c]);
+}
+
+function renderFooter() {
+  const bits = [];
+  if (SITE.github) bits.push(`<a href="https://${SITE.github}">${
+    escapeHtml(SITE.github)}</a>`);
+  if (SITE.email) bits.push(`<a href="mailto:${SITE.email}">${
+    escapeHtml(SITE.email)}</a>`);
+  $("contact").innerHTML = bits.join(" · ");
+}
+
+/* ── the orrery ───────────────────────────────────────────────────────────
+
+   Real integration, not a CSS animation on a circle. Each project is a body
+   in a central gravitational field, stepped with symplectic Euler — which,
+   unlike the naive kind, conserves energy over long runs instead of letting
+   every orbit slowly spiral out. The page is meant to be left open.
+
+   Holding the pointer down adds a second mass. Two bodies have a closed-form
+   solution; three do not, which is the whole point of the note below the
+   fold and the reason the orbits never come back quite the same.  */
+
+const G = 1;          // absorbed into the star's mass; only the product matters
+const M = 1;
+
+// Softening keeps the 1/r² force finite if something passes through a mass.
+// It has to be tiny for the star, because the initial velocities are the
+// closed-form Kepler ones and those assume an *unsoftened* field: at 0.02 the
+// softening was a quarter of r² for the inner body, so it started on the
+// wrong orbit for the actual force and its semi-major axis drifted 22% in a
+// few hours. Measured, not guessed. The pointer mass can be softer — nobody
+// has a closed form for where you put your finger.
+const SOFT_STAR = 1e-5;
+const SOFT_POINTER = 0.01;
+const POINTER_MASS = 0.35;   // 0.8 unbinds bodies; 0.15 is barely visible
+
+// Small enough that the inner body takes about half a minute to go round.
+// The obvious value of 0.016 orbited it roughly twice a second, which reads
+// as a blur rather than as a solar system.
+const DT = 0.0003;
+const SUBSTEPS = 2;
+const TRAIL_EVERY = 4;    // sampling, so a trail spans seconds and not frames
+const MAX_R = 1.9;        // past this a body has escaped and gets put back
+
+const canvas = $("sky");
+const ctx = canvas.getContext("2d", { alpha: false });
+const orrery = $("orrery");
+
+let bodies = [];
+let view = { w: 0, h: 0, s: 1, cx: 0, cy: 0, dpr: 1 };
+let pointer = { x: 0, y: 0, inside: false, held: false };
+let perturbed = false;
+let hovered = null;
+let running = true;
+let tick = 0;
+
+function seed() {
+  bodies = PROJECTS.map((p, i) => {
+    // Start at periapsis, where the velocity for a given eccentricity has a
+    // clean closed form: v = sqrt( GM(1+e) / a(1-e) ).
+    const r = p.a * (1 - p.e);
+    const v = Math.sqrt(G * M * (1 + p.e) / (p.a * (1 - p.e)));
+    const th = p.phase;
+    return {
+      i, p,
+      inc: (p.inc || 0) * Math.PI / 180,
+      node: p.node || 0,
+      x: Math.cos(th) * r, y: Math.sin(th) * r,
+      vx: -Math.sin(th) * v, vy: Math.cos(th) * v,
+      trail: [],
+    };
+  });
+  tick = 0;
+  perturbed = false;
+  $("reset").classList.remove("on");
+}
+
+function resize() {
+  const rect = orrery.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  view.dpr = dpr;
+  view.w = rect.width; view.h = rect.height;
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  view.cx = rect.width / 2;
+  view.cy = rect.height / 2;
+  // Scale so the outermost apoapsis sits inside the frame with room to spare.
+  const far = Math.max(...PROJECTS.map(p => p.a * (1 + p.e)));
+  view.s = Math.min(rect.width, rect.height) / 2 / (far * 1.22);
+}
+
+/* Orbits are planar conics — that is the whole content of Kepler's first law
+   — so the integration stays two-dimensional in each body's *own* plane and
+   the plane is then oriented in space. Which is exactly how orbital elements
+   work: inclination and longitude of ascending node say where the plane sits,
+   and nothing about the motion inside it.
+
+   Doing it the other way round, integrating in 3D to get a result that is
+   provably 2D, would be more arithmetic for less accuracy. */
+let camera = 24 * Math.PI / 180;   // how far the viewpoint is tipped off plane
+
+function project(b) {
+  const u = b.x, v = b.y;
+  const ci = Math.cos(b.inc), si = Math.sin(b.inc);
+  const cn = Math.cos(b.node), sn = Math.sin(b.node);
+  // Rz(node) · Rx(inc) · (u, v, 0)
+  const X = u * cn - v * ci * sn;
+  const Y = u * sn + v * ci * cn;
+  const Z = v * si;
+  const ct = Math.cos(camera), st = Math.sin(camera);
+  return {
+    x: view.cx + X * view.s,
+    y: view.cy + (Y * ct - Z * st) * view.s,
+    // Positive is towards the viewer. Used only for draw order, so a body
+    // genuinely passes behind the star rather than over it.
+    z: Y * st + Z * ct,
+  };
+}
+
+
+function step() {
+  // The held pointer, as a mass in world coordinates.
+  let px = 0, py = 0, pm = 0;
+  if (pointer.held && pointer.inside) {
+    px = (pointer.x - view.cx) / view.s;
+    py = (pointer.y - view.cy) / view.s;
+    pm = POINTER_MASS;
+    perturbed = true;
+  }
+
+  for (const b of bodies) {
+    // Central star.
+    let dx = -b.x, dy = -b.y;
+    let r2 = dx * dx + dy * dy + SOFT_STAR;
+    let inv = G * M / (r2 * Math.sqrt(r2));
+    let ax = dx * inv, ay = dy * inv;
+
+    if (pm) {
+      dx = px - b.x; dy = py - b.y;
+      r2 = dx * dx + dy * dy + SOFT_POINTER;
+      inv = G * pm / (r2 * Math.sqrt(r2));
+      ax += dx * inv; ay += dy * inv;
+    }
+
+    // Symplectic Euler: velocity first, then position with the *new*
+    // velocity. One line different from the naive version and the difference
+    // is an orbit that holds its shape for hours rather than minutes.
+    b.vx += ax * DT; b.vy += ay * DT;
+    b.x += b.vx * DT; b.y += b.vy * DT;
+
+    if (tick % TRAIL_EVERY === 0) {
+      b.trail.push(b.x, b.y);
+      if (b.trail.length > 600) b.trail.splice(0, 2);
+    }
+
+    // A body flung out of the frame is gone forever, and an empty diagram is
+    // a broken one. Put it back where it started rather than pretend.
+    if (Math.hypot(b.x, b.y) > MAX_R) {
+      const p = b.p;
+      const rr = p.a * (1 - p.e);
+      const vv = Math.sqrt(G * M * (1 + p.e) / (p.a * (1 - p.e)));
+      const th = Math.random() * Math.PI * 2;
+      b.x = Math.cos(th) * rr; b.y = Math.sin(th) * rr;
+      b.vx = -Math.sin(th) * vv; b.vy = Math.cos(th) * vv;
+      b.trail.length = 0;
+    }
+  }
+  tick++;
+  if (perturbed) $("reset").classList.add("on");
+}
+
+function css(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function draw() {
+  const paper = css("--field"), accent = css("--accent"), rule = css("--rule");
+
+  ctx.fillStyle = paper;
+  ctx.fillRect(0, 0, view.w, view.h);
+
+  // Guide circles at each semi-major axis — an engraved-orrery touch, and it
+  // makes the eccentricity legible: the body visibly leaves its own ring.
+  ctx.strokeStyle = rule; ctx.lineWidth = 1;
+  for (const b of bodies) {
+    ctx.beginPath();
+    for (let k = 0; k <= 72; k++) {
+      const th = (k / 72) * Math.PI * 2;
+      const q = project({
+        x: Math.cos(th) * b.p.a, y: Math.sin(th) * b.p.a,
+        inc: b.inc, node: b.node,
+      });
+      k ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y);
+    }
+    ctx.stroke();
+  }
+
+  // Trails, fading back along their length.
+  for (const b of bodies) {
+    const n = b.trail.length / 2;
+    let prev = null;
+    for (let k = 0; k < n; k++) {
+      const q = project({
+        x: b.trail[k * 2], y: b.trail[k * 2 + 1], inc: b.inc, node: b.node,
+      });
+      if (prev) {
+        ctx.strokeStyle = accent;
+        ctx.globalAlpha = (k / n) ** 2 * 0.5;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(prev.x, prev.y);
+        ctx.lineTo(q.x, q.y);
+        ctx.stroke();
+      }
+      prev = q;
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Order matters: the far half, then the star, then the near half. Drawing
+  // every body after the star would sort them correctly among themselves and
+  // still skate all of them over the one object they can actually go behind.
+  drawBodies(-1);
+  drawStar();
+  drawPointer();
+  drawBodies(1);
+}
+
+function drawStar() {
+  const ink = css("--ink"), accent = css("--accent");
+  const g = ctx.createRadialGradient(view.cx, view.cy, 0, view.cx, view.cy, 34);
+  g.addColorStop(0, accent); g.addColorStop(1, "transparent");
+  ctx.globalAlpha = 0.16; ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(view.cx, view.cy, 34, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = ink;
+  ctx.beginPath(); ctx.arc(view.cx, view.cy, 5, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawPointer() {
+  const ink3 = css("--ink-3");
+  if (pointer.held && pointer.inside) {
+    ctx.strokeStyle = ink3; ctx.lineWidth = 1; ctx.globalAlpha = 0.65;
+    ctx.beginPath();
+    ctx.arc(pointer.x, pointer.y, 13 + Math.sin(Date.now() / 190) * 2.2, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawBodies(half) {
+  const ink3 = css("--ink-3"), accent = css("--accent");
+  // Painter's algorithm. Nothing here needs a depth buffer: there is exactly
+  // one thing a body can pass behind, and sorting three items is free.
+  const ordered = bodies
+    .map(b => ({ b, q: project(b) }))
+    .filter(o => (half < 0 ? o.q.z <= 0 : o.q.z > 0))
+    .sort((m, n) => m.q.z - n.q.z);
+  for (const { b, q } of ordered) {
+    const sx = q.x, sy = q.y;
+    const on = hovered === b;
+    const live = b.p.status === "live";
+    ctx.fillStyle = live ? accent : ink3;
+    ctx.beginPath(); ctx.arc(sx, sy, b.p.size * (on ? 1.45 : 1), 0, Math.PI * 2);
+    ctx.fill();
+    if (on) {
+      ctx.strokeStyle = ctx.fillStyle; ctx.globalAlpha = 0.35; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(sx, sy, b.p.size * 2.9, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    if (live && b.p.name !== "—") {
+      ctx.fillStyle = ink3;
+      // A plain family here, not the CSS variable: ctx.font takes a single
+      // shorthand and silently ignores the whole assignment if the stack does
+      // not parse, which would drop the labels with no error anywhere.
+      ctx.font = "11px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText(b.p.name, sx + b.p.size + 7, sy + 4);
+    }
+  }
+}
+
+/* The readout. Real quantities, computed from the state each frame — the
+   point of the whole thing is that the numbers are not decorative. */
+function hud() {
+  const b = hovered || bodies[0];
+  if (!b) return;
+  const r = Math.hypot(b.x, b.y);
+  const v = Math.hypot(b.vx, b.vy);
+  // Specific orbital energy, ε = v²/2 − μ/r. Negative means bound.
+  const energy = v * v / 2 - G * M / r;
+  const a = energy < 0 ? -G * M / (2 * energy) : Infinity;
+  // Converted to real seconds, so you can count one off against a clock.
+  // A period quoted in simulation units is a number nobody can check.
+  const rate = DT * SUBSTEPS * 60;
+  const period = isFinite(a)
+    ? 2 * Math.PI * Math.sqrt(a * a * a / (G * M)) / rate : Infinity;
+  $("hud").innerHTML =
+    `<b>${escapeHtml(b.p.name === "—" ? "unnamed body" : b.p.name)}</b><br>` +
+    `r ${r.toFixed(3)}　v ${v.toFixed(3)}<br>` +
+    `ε ${energy.toFixed(3)} ${energy < 0 ? "(bound)" : "(escaping)"}<br>` +
+    `T ${isFinite(period) ? period.toFixed(0) + " s" : "—"}`;
+}
+
+/* ── pointer ──────────────────────────────────────────────────────────── */
+
+function pickAt(x, y) {
+  let best = null, bestD = 20;
+  for (const b of bodies) {
+    const q = project(b);
+    const d = Math.hypot(q.x - x, q.y - y);
+    if (d < bestD) { bestD = d; best = b; }
+  }
+  return best;
+}
+
+function moveTip() {
+  const tip = $("tip");
+  if (!hovered) { tip.classList.remove("on"); return; }
+  const url = urlFor(hovered.p);
+  tip.innerHTML =
+    `<span class="n">${escapeHtml(hovered.p.name === "—" ? "Slot free" : hovered.p.name)}</span>` +
+    (url ? escapeHtml(url.replace("https://", "")) : escapeHtml(hovered.p.status));
+  tip.classList.add("on");
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  const q = project(hovered);
+  let x = q.x + 14, y = q.y - h - 10;
+  if (x + w > view.w - 8) x = q.x - w - 14;
+  if (y < 8) y = q.y + 14;
+  tip.style.left = x + "px";
+  tip.style.top = y + "px";
+}
+
+function bindPointer() {
+  const hint = $("hint");
+  canvas.addEventListener("pointermove", (e) => {
+    const r = canvas.getBoundingClientRect();
+    pointer.x = e.clientX - r.left; pointer.y = e.clientY - r.top;
+    pointer.inside = true;
+    hovered = pointer.held ? null : pickAt(pointer.x, pointer.y);
+    canvas.style.cursor = hovered && urlFor(hovered.p) ? "pointer" : "crosshair";
+  });
+  canvas.addEventListener("pointerleave", () => {
+    pointer.inside = false; pointer.held = false;
+    hovered = null; orrery.classList.remove("grabbing");
+  });
+  canvas.addEventListener("pointerdown", (e) => {
+    canvas.setPointerCapture(e.pointerId);
+    const r = canvas.getBoundingClientRect();
+    pointer.x = e.clientX - r.left; pointer.y = e.clientY - r.top;
+    pointer.inside = true;
+    const hit = pickAt(pointer.x, pointer.y);
+    const url = hit && urlFor(hit.p);
+    if (url) { window.location.href = url; return; }
+    pointer.held = true; hovered = null;
+    orrery.classList.add("grabbing");
+    hint.style.opacity = "0";
+  });
+  const release = () => { pointer.held = false; orrery.classList.remove("grabbing"); };
+  canvas.addEventListener("pointerup", release);
+  canvas.addEventListener("pointercancel", release);
+  $("reset").addEventListener("click", () => { seed(); hint.style.opacity = ""; });
+
+  // Straight down at 0° is where the geometry is honest — the ellipses are
+  // the orbits, at true shape. Everything past that trades legibility for
+  // depth, which is a taste question and therefore yours rather than mine.
+  const range = $("tiltRange");
+  const setTilt = () => {
+    camera = Number(range.value) * Math.PI / 180;
+    $("tiltLabel").textContent = `inclination ${range.value}°`;
+  };
+  range.addEventListener("input", setTilt);
+  // The slider owns the value; reading it back on load survives a refresh
+  // restoring the previous position, which browsers do and would otherwise
+  // leave the label disagreeing with the view.
+  setTilt();
+}
+
+/* ── loop ─────────────────────────────────────────────────────────────── */
+
+function frame() {
+  if (running) {
+    // A fixed number of sub-steps rather than a variable one keyed to the real
+    // clock: a background tab that wakes up after ten seconds would otherwise
+    // integrate a ten-second step and fling everything into deep space.
+    const n = REDUCED ? 1 : SUBSTEPS;
+    for (let k = 0; k < n; k++) step();
+    draw();
+    hud();
+    moveTip();
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ── the Zipf figure ──────────────────────────────────────────────────── */
+
+function zipf() {
+  const svg = $("zipf");
+  if (!svg) return;
+  const W = 300, H = 150, L = 30, R = 10, T = 14, B = 24;
+  const maxRank = 1e5;
+  const xOf = (rank) => L + (Math.log10(rank) / Math.log10(maxRank)) * (W - L - R);
+  // Zipf: f ∝ 1/rank. On log axes that is a straight line of slope −1, which
+  // is exactly why the law is usually shown this way.
+  const yOf = (rank) => T + (Math.log10(rank) / Math.log10(maxRank)) * (H - T - B);
+
+  const grid = [];
+  for (let d = 0; d <= 5; d++) {
+    const x = xOf(Math.pow(10, d));
+    grid.push(`<line x1="${x}" y1="${T}" x2="${x}" y2="${H - B}" stroke="var(--rule)" stroke-width="1"/>`);
+  }
+  grid.push(`<line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" stroke="var(--rule)" stroke-width="1"/>`);
+  grid.push(`<text x="${L}" y="${H - 8}" font-size="8" fill="var(--ink-3)" font-family="monospace">rank 1</text>`);
+  grid.push(`<text x="${W - R}" y="${H - 8}" font-size="8" fill="var(--ink-3)" font-family="monospace" text-anchor="end">100k</text>`);
+  $("zipf-grid").innerHTML = grid.join("");
+
+  let d = "";
+  for (let i = 0; i <= 100; i++) {
+    const rank = Math.pow(10, (i / 100) * Math.log10(maxRank));
+    d += (i ? "L" : "M") + xOf(rank).toFixed(1) + " " + yOf(rank).toFixed(1);
+  }
+  $("zipf-curve").setAttribute("d", d);
+
+  const read = $("zipf-read"), mark = $("zipf-mark"), dot = $("zipf-dot");
+  $("zipf-hit").addEventListener("pointermove", (e) => {
+    const box = svg.getBoundingClientRect();
+    const px = ((e.clientX - box.left) / box.width) * W;
+    const t = Math.min(1, Math.max(0, (px - L) / (W - L - R)));
+    const rank = Math.max(1, Math.round(Math.pow(10, t * Math.log10(maxRank))));
+    mark.setAttribute("x1", xOf(rank)); mark.setAttribute("x2", xOf(rank));
+    mark.setAttribute("opacity", "1");
+    dot.setAttribute("cx", xOf(rank)); dot.setAttribute("cy", yOf(rank));
+    dot.setAttribute("opacity", "1");
+    read.innerHTML = `word <b>#${rank.toLocaleString()}</b> appears about ` +
+      `<b>1/${rank.toLocaleString()}</b> as often as the commonest one`;
+  });
+  $("zipf-hit").addEventListener("pointerleave", () => {
+    mark.setAttribute("opacity", "0"); dot.setAttribute("opacity", "0");
+    read.innerHTML = "rank × frequency ≈ constant";
+  });
+}
+
+/* ── start ────────────────────────────────────────────────────────────── */
+
+renderProjects();
+renderFooter();
+zipf();
+seed();
+resize();
+bindPointer();
+addEventListener("resize", resize);
+// Nothing to compute while the diagram is off screen or the tab is hidden.
+new IntersectionObserver(
+  ([e]) => { running = e.isIntersecting && !document.hidden; },
+  { threshold: 0.01 }
+).observe(orrery);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) running = false;
+});
+requestAnimationFrame(frame);
+</script>
+
+</body>
+</html>
