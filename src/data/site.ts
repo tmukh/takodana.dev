@@ -1,5 +1,5 @@
 // Single source for what the site says. Facts follow CAREER-PLAN §7 (claim boundaries);
-// [BRACKETS] are placeholders only Tarik can fill.
+// Experience and skills follow the master CV (cv_master.tex); keep the two in step.
 
 export type Link = { label: string; href: string };
 
@@ -71,6 +71,19 @@ export const worlds: World[] = [
     orbit: { a: 7.2, r: 0.42, planned: true },
   },
   {
+    id: "research",
+    label: "Fainder-Redone",
+    kind: "dense rocky world · research",
+    color: "#C9D2DE",
+    title: "Systems research",
+    text: "Where I learned to measure. My master's thesis rebuilt the query phase of Fainder (VLDB 2024) in Rust and measured every optimisation stage on its own with hardware performance counters. Before that, C++ operators for the NebulaStream stream processor at BIFOLD: 45% more throughput under 100 ms.",
+    links: [
+      { label: "Thesis artefact", href: "https://github.com/tmukh/Fainder-Redone" },
+      { label: "Earlier work", href: "/projects/#earlier" },
+    ],
+    orbit: { a: 8.3, r: 0.36 },
+  },
+  {
     id: "languages",
     label: "Languages",
     kind: "ringed outer world",
@@ -78,7 +91,7 @@ export const worlds: World[] = [
     title: "Languages",
     text: "Arabic is my first language; I work in German and English and read Hebrew. It is why the search speaks more than English, and why some of my essays are about grammar and Zipf's law.",
     links: [{ label: "About me", href: "/about/" }],
-    orbit: { a: 9.2, r: 0.5, rings: true },
+    orbit: { a: 9.6, r: 0.5, rings: true },
   },
 ];
 
@@ -97,26 +110,34 @@ export type Role = { when: string; title: string; text: string };
 export const experience: Role[] = [
   {
     when: "03/2026 – 09/2026",
-    title: "Software Engineer · Capgemini",
-    text: "Java and Spring Boot microservices for a federal administration client; a TypeScript/React frontend and Python tooling on a defence project; contributed to team-level Terraform on STACKIT; CI with GitHub Actions, Jenkins and GitLab CI.",
+    title: "Software Engineer (full-time) · Capgemini",
+    text: "Java and Spring Boot microservices on Oracle with an Angular frontend for the Bundesverwaltungsamt, a federal agency, in an agile team. On a defence-sector project: TypeScript and React frontend components, Python tooling, and contributions to Terraform on STACKIT and the team's GitHub Actions pipelines. Open-source contributions to IDEasy, a Java CLI for reproducible developer environments.",
   },
   {
     when: "03/2025 – 02/2026",
-    title: "IT Systems Engineer · Bundespolizeipräsidium",
-    text: "Data-centre migration of Linux and Windows servers. 99.9% availability across the systems I administered. Ansible plus Python and Bash health checks cut manual effort by 40%. Checkmk monitoring; supported Oracle operations including backup and recovery.",
+    title: "IT Systems Engineer (full-time) · Bundespolizeipräsidium, Berlin",
+    text: "Planned and carried out the migration of federal police systems into a new data centre, Linux and Windows servers included. 99.9% availability across the systems I administered, with Ansible and automated health checks in Python and Bash that cut manual effort by 40%. Stood up Checkmk monitoring, upgraded GitLab, Nextcloud and a wiki, and supported Oracle operations including backup and recovery.",
   },
   {
     when: "11/2024 – 02/2025",
-    title: "Working student · BIFOLD",
-    text: "C++ stream-processing operators for NebulaStream: 45% higher throughput at under 100 ms latency, for a Charité project. Named in the acknowledgements of the SIGMOD Companion 2025 demo paper.",
+    title: "Working Student, Software Development · BIFOLD, TU Berlin",
+    text: "C++ aggregation and filtering operators for NebulaStream, a distributed stream processing platform: 45% more throughput than the previous implementation at under 100 ms end-to-end latency, with thermal sensor data at 30 FPS across nodes. Named in the acknowledgements of the SIGMOD Companion 2025 demo paper.",
   },
-  { when: "04/2024 – 11/2025", title: "[ROLE] · Innowadi (part-time)", text: "[One line on what you did there.]" },
+  {
+    when: "04/2024 – 11/2025",
+    title: "Facility Assistant, IoT and Server Infrastructure (part-time) · Innowadi",
+    text: "Built and ran the IoT and server infrastructure for research greenhouses: Linux servers and monitoring machines, sensors and motor controls. Diagnosed and fixed faults during live operation.",
+  },
   {
     when: "06/2023 – 10/2024",
-    title: "[ROLE] · Deli Bringy (via Feindt Vermögen & Consult)",
-    text: "TypeScript on Node.js Cloud Functions on Google Cloud (Firebase, serverless) and a Flutter app; improved client performance by 35%.",
+    title: "Working Student, Software Development · Deli Bringy (via Feindt Vermögen & Consult)",
+    text: "A TypeScript (Node.js) backend on Google Cloud (Firebase, serverless): Cloud Functions, Firestore security rules, the data model and external integrations, for a quick-commerce app with up to 10,000 users. Query optimisation made the app 35% faster. Also the Flutter app and internal web tools.",
   },
-  { when: "03/2022 – 09/2022", title: "[ROLE] · Universität Hamburg, AKKORD", text: "[One line on what you did there.]" },
+  {
+    when: "03/2022 – 09/2022",
+    title: "Student Research Assistant · Universität Hamburg, AKKORD",
+    text: "Wrote digital training material on data science, focused on SQL, for the Faculty of Education.",
+  },
 ];
 
 export type PlannedPost = { series: string; group: "Night Sky Digest" | "Homelab" | "Incidents" | "Essays"; title: string; blurb: string };
@@ -138,7 +159,6 @@ export const plannedPosts: PlannedPost[] = [
 
 export const contact = {
   github: "https://github.com/tmukh",
-  linkedin: "[LINKEDIN URL]",
-  email: "[EMAIL]",
-  cv: "[CV PDF URL]",
+  linkedin: "https://www.linkedin.com/in/abumukht/",
+  email: "abumukht@protonmail.com",
 };
