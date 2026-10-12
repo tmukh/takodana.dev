@@ -72,7 +72,8 @@
   padding: 18px 22px;
   border-radius: 8px;
   background: var(--accent-soft);
-  color: #1c2a73;
+  color: var(--ink);
+  border-left: 3px solid var(--star);
 }
 .body :global(blockquote p:last-child) {
   margin: 0;

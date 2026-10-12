@@ -8,7 +8,7 @@
   min-height: 44px;
   padding: 0 16px;
   border-radius: 999px;
-  border: 1px solid #c9cdc4;
+  border: 1px solid var(--line-strong);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
@@ -19,6 +19,6 @@
 .filter[aria-pressed="true"] {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 600;
 }

@@ -49,7 +49,7 @@
 .line {
   margin: 0;
   font-size: 18px;
-  color: #c7cdde;
+  color: var(--ink-2);
 }
 
 @media (max-width: 760px) {

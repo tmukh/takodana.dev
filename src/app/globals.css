@@ -1,22 +1,27 @@
-/* Design tokens from the takodana.dev canvas. Light inner pages, dark home (the orrery). */
 :root {
-  --ground: #f3f4f1;
-  --surface: #ffffff;
-  --ink: #14161a;
-  --ink-2: #3a3f4b;
-  --muted: #5a6070;
-  --line: #daddd6;
-  --accent: #2647d9;
-  --accent-hover: #1a33a3;
-  --accent-soft: #eef0fb;
-  --accent-ink: #22348f;
-  --ok: #17703f;
+  /* Night sky everywhere: the home page's space, carried through every page. */
+  --ground: #070a14;
+  --surface: #0d1222;
+  --ink: #e6e9f2;
+  --ink-2: #b9c0d4;
+  --muted: #8c96b2;
+  --line: #1e2640;
+  --line-soft: #161d33;
+  --line-strong: #34405f;
+  --accent: #9db4ff;
+  --accent-hover: #c6d3ff;
+  --accent-soft: rgba(157, 180, 255, 0.12);
+  --accent-ink: #c6d3ff;
+  --on-accent: #070a14;
+  --ok: #7fd6a4;
   --space: #05070f;
   --space-ink: #e6e9f2;
   --space-muted: #8c96b2;
   --star: #ffd27a;
+  --star-hover: #ffe2a8;
   --radius: 10px;
   --max: 1160px;
+  color-scheme: dark;
 }
 
 * {
@@ -25,15 +30,35 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip; /* decorative orbits may reach past the edge; the page never scrolls sideways */
 }
 
 body {
   margin: 0;
+  min-height: 100vh;
   background: var(--ground);
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: 17px;
   line-height: 1.6;
+}
+
+/* A faint fixed starfield behind every page; the home page draws its own in three.js. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgba(230, 233, 242, 0.55), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(230, 233, 242, 0.35), transparent),
+    radial-gradient(1.5px 1.5px at 210px 160px, rgba(255, 210, 122, 0.45), transparent),
+    radial-gradient(1px 1px at 60px 220px, rgba(230, 233, 242, 0.3), transparent),
+    radial-gradient(1px 1px at 290px 260px, rgba(157, 180, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 330px 40px, rgba(230, 233, 242, 0.25), transparent);
+  background-size: 360px 300px;
+  opacity: 0.7;
 }
 
 a {
@@ -96,17 +121,19 @@ h3 {
   border-radius: 6px;
   font-weight: 600;
   text-decoration: none;
-  border: 1px solid #c9cdc4;
+  border: 1px solid var(--line-strong);
   background: var(--surface);
   color: var(--ink);
 }
+/* The one gold thing on a page, like the star on the home page. */
 .button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+  background: var(--star);
+  border-color: var(--star);
+  color: var(--on-accent);
 }
 .button.primary:hover {
-  background: var(--accent-hover);
+  background: var(--star-hover);
+  color: var(--on-accent);
 }
 
 .status-ok {
