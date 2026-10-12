@@ -11,11 +11,13 @@ const GROUPS = ["All", "Night Sky Digest", "Homelab", "Incidents", "Essays"] as 
 
 export default function WritingList({ published, drafts }: { published: PostMeta[]; drafts: PlannedPost[] }) {
   const [group, setGroup] = useState<(typeof GROUPS)[number]>("All");
+  // Only offer filters that match something (no essays yet, for instance).
+  const groups = GROUPS.filter((g) => g === "All" || [...published, ...drafts].some((i) => i.group === g));
   const show = <T extends { group: string }>(items: T[]) => (group === "All" ? items : items.filter((i) => i.group === group));
   return (
     <>
       <div role="group" aria-label="Filter by series" className={f.filters}>
-        {GROUPS.map((g) => (
+        {groups.map((g) => (
           <button key={g} type="button" aria-pressed={group === g} className={f.filter} onClick={() => setGroup(g)}>
             {g}
           </button>

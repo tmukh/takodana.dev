@@ -1,6 +1,6 @@
 # takodana.dev
 
-My site: a 3D orrery of my projects on the home page, case studies, build logs and essays.
+My site: a 3D orrery of my projects on the home page, case studies and build logs. The previous site is kept in `legacy/`.
 Public at https://takodana.dev, served from my homelab ([homelab-dev](https://github.com/tmukh/homelab-dev)).
 
 - Next.js 16 static export (`output: "export"`), served by unprivileged nginx

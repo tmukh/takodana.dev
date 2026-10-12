@@ -18,8 +18,7 @@ export default function Writing() {
         <section className={s.hero}>
           <h1 className={s.title}>Writing</h1>
           <p className={s.lede}>
-            Build logs on how the projects were built, milestone by milestone, including the parts that broke. And essays
-            on things I keep thinking about.
+            Build logs on how the projects were built, milestone by milestone, including the parts that broke.
           </p>
         </section>
         <WritingList published={published} drafts={drafts} />
