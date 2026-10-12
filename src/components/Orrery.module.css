@@ -1,0 +1,167 @@
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.worlds {
+  position: absolute;
+  right: 28px;
+  top: 96px;
+  width: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.worldsTitle {
+  margin: 0 0 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--space-muted);
+}
+.world {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: rgba(5, 7, 15, 0.35);
+  color: var(--space-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.world:hover,
+.world[aria-pressed="true"] {
+  border-color: #4b5788;
+  background: rgba(43, 51, 84, 0.7);
+}
+.dot {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  outline-offset: 2px;
+}
+.worldText {
+  display: flex;
+  flex-direction: column;
+}
+.worldLabel {
+  font-weight: 600;
+  font-size: 15px;
+}
+.worldKind {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--space-muted);
+}
+
+.panel {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  width: min(380px, calc(100% - 56px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 22px 18px;
+  border: 1px solid #2b3354;
+  border-radius: 12px;
+  background: rgba(14, 18, 34, 0.92);
+  backdrop-filter: blur(6px);
+}
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panelKind {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+.close {
+  min-width: 44px;
+  min-height: 44px;
+  margin: -12px -12px -12px 0;
+  border: 0;
+  background: transparent;
+  color: #c7cdde;
+  font-size: 22px;
+  cursor: pointer;
+}
+.panelTitle {
+  margin: 0;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.15;
+}
+.panelText {
+  margin: 0;
+  color: #c7cdde;
+  font-size: 15px;
+}
+.panelLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.panelLinks a {
+  color: #afc0ff;
+  padding: 10px 0;
+}
+.panelLinks a:hover {
+  color: #fff;
+}
+
+.reset {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid #2b3354;
+  background: rgba(14, 18, 34, 0.85);
+  color: #c7cdde;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Phones: the world list becomes a horizontal strip, the panel a bottom sheet. */
+@media (max-width: 760px) {
+  .worlds {
+    top: auto;
+    bottom: 78px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .worldsTitle,
+  .worldKind {
+    display: none;
+  }
+  .world {
+    flex: 0 0 auto;
+  }
+  .panel {
+    left: 16px;
+    right: 16px;
+    bottom: 140px;
+    width: auto;
+  }
+}

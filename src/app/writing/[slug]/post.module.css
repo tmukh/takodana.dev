@@ -1,0 +1,97 @@
+.article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 24px 0;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.back {
+  display: inline-block;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  padding: 8px 0;
+}
+.meta {
+  margin: 24px 0 12px;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.title {
+  margin: 0 0 20px;
+  font-stretch: 108%;
+  font-weight: 750;
+  font-size: clamp(34px, 5vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.summary {
+  margin: 0 0 40px;
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.body :global(h2) {
+  margin: 48px 0 12px;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.2;
+}
+.body :global(h3) {
+  margin: 32px 0 8px;
+  font-weight: 700;
+  font-size: 22px;
+}
+.body :global(p),
+.body :global(ul),
+.body :global(ol) {
+  margin: 0 0 20px;
+}
+.body :global(pre) {
+  margin: 28px 0;
+  padding: 20px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+.body :global(code) {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.9em;
+}
+.body :global(:not(pre) > code) {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.body :global(blockquote) {
+  margin: 36px 0;
+  padding: 18px 22px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: #1c2a73;
+}
+.body :global(blockquote p:last-child) {
+  margin: 0;
+}
+.body :global(table) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  margin: 0 0 24px;
+  display: block;
+  overflow-x: auto;
+}
+.body :global(th),
+.body :global(td) {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.body :global(img) {
+  max-width: 100%;
+  height: auto;
+}

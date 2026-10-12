@@ -1,0 +1,65 @@
+.space {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 640px;
+  overflow: hidden;
+  background: var(--space);
+  color: var(--space-ink);
+}
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.header :global(a) {
+  pointer-events: auto;
+}
+.intro {
+  position: absolute;
+  left: 28px;
+  bottom: 28px;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+.kicker,
+.hint {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--space-muted);
+}
+.kicker {
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.name {
+  margin: 0;
+  font-stretch: 112%;
+  font-weight: 750;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+.line {
+  margin: 0;
+  font-size: 18px;
+  color: #c7cdde;
+}
+
+@media (max-width: 760px) {
+  .intro {
+    top: 84px;
+    bottom: auto;
+    left: 16px;
+    right: 16px;
+  }
+  .hint {
+    display: none;
+  }
+}

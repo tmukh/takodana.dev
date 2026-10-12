@@ -1,0 +1,7 @@
+.git
+.github
+.next
+out
+node_modules
+*.md
+!src/content/**/*.md
