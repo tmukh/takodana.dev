@@ -23,7 +23,7 @@
   text-decoration: none;
 }
 .tld {
-  color: var(--accent);
+  color: var(--star);
 }
 .links {
   display: flex;
