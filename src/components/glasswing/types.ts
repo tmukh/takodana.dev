@@ -26,6 +26,10 @@ export type StepMsg = {
   topIds: Uint32Array;
   topProbs: Float32Array;
   topTexts: string[];
+  /** Logit lens [layers+1, 5]: top tokens if the model stopped after the embedding / each layer. */
+  lensIds: Uint32Array;
+  lensProbs: Float32Array;
+  lensTexts: string[];
 };
 
 export type WorkerMsg =

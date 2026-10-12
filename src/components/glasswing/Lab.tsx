@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import lock from "../../../glasswing.lock.json";
+import { glasswingCircuit } from "@/data/site";
 import { Tower } from "./Tower";
 import { attentionWeight, type ModelConfig, type StepMsg, type WorkerMsg } from "./types";
 import s from "./Lab.module.css";
@@ -49,6 +50,9 @@ export default function Lab() {
   const [seed, setSeed] = useState(1);
   const [doneReason, setDoneReason] = useState("");
   const [engineTps, setEngineTps] = useState<number | null>(null);
+  const [lensOn, setLensOn] = useState(true);
+  const [ablated, setAblated] = useState<[number, number][]>([]);
+  const [runAblated, setRunAblated] = useState<[number, number][]>([]); // what the shown story used
 
   // Worker lifecycle.
   useEffect(() => {
@@ -128,7 +132,12 @@ export default function Lab() {
     setDoneReason("");
     setEngineTps(null);
     setStatus("running");
-    workerRef.current.postMessage({ type: "generate", prompt, maxTokens: 200, temperature, topP, seed });
+    setRunAblated(ablated);
+    towerRef.current?.setAblated(ablated);
+    workerRef.current.postMessage({
+      type: "generate", prompt, maxTokens: 200, temperature, topP, seed,
+      lens: lensOn, ablateHeads: ablated.flat(), ablateNeurons: [],
+    });
   };
   const stop = () => workerRef.current?.postMessage({ type: "stop" });
 
@@ -142,6 +151,9 @@ export default function Lab() {
   // is excluded: many heads park most of their attention there when nothing else is relevant.
   const strongest = Math.max(1e-9, ...weights.slice(1));
   const chosenNext = steps[current + 1]?.token;
+  const isOff = (l: number, h: number) => ablated.some(([a, b]) => a === l && b === h);
+  const toggleHead = (l: number, h: number) =>
+    setAblated((prev) => (isOff(l, h) ? prev.filter(([a, b]) => !(a === l && b === h)) : [...prev, [l, h]]));
 
   const story = steps.filter((x) => !x.prompt).length;
 
@@ -276,11 +288,65 @@ export default function Lab() {
                   all heads
                 </button>
                 {Array.from({ length: cfg.n_heads }, (_, h) => (
-                  <button key={h} type="button" aria-pressed={head === h} onClick={() => setHead(h)}>
+                  <button key={h} type="button" aria-pressed={head === h} onClick={() => setHead(h)}
+                    className={isOff(layer, h) ? s.off : undefined}>
                     h{h + 1}
                   </button>
                 ))}
               </div>
+
+              <h3>Switch parts off</h3>
+              <p className={s.hint}>
+                Zero a head&apos;s output and generate again with the same seed, to see what it was doing.
+              </p>
+              <div className={s.pick}>
+                {head !== "all" && (
+                  <button type="button" onClick={() => toggleHead(layer, head)} disabled={status === "running"}>
+                    {isOff(layer, head) ? "switch on" : "switch off"} L{layer + 1}H{head + 1}
+                  </button>
+                )}
+                <button type="button" onClick={() => setAblated(glasswingCircuit.heads)} disabled={status === "running"}>
+                  switch off {glasswingCircuit.label}
+                </button>
+                {ablated.length > 0 && (
+                  <button type="button" onClick={() => setAblated([])} disabled={status === "running"}>
+                    switch all back on
+                  </button>
+                )}
+              </div>
+              {ablated.length > 0 && (
+                <p className={s.hint}>
+                  Off on the next run: {ablated.map(([l, h]) => `L${l + 1}H${h + 1}`).join(", ")}
+                </p>
+              )}
+
+              <h3>
+                <label className={s.toggle}>
+                  <input type="checkbox" checked={lensOn} onChange={(e) => setLensOn(e.target.checked)}
+                    disabled={status === "running"} />
+                  Logit lens
+                </label>
+              </h3>
+              {lensOn && step && step.lensIds?.length > 0 ? (
+                <>
+                  <p className={s.hint}>If the model stopped after each layer, it would say:</p>
+                  <ol className={s.lens}>
+                    {Array.from({ length: cfg.n_layers + 1 }, (_, l) => {
+                      const id = step.lensIds[l * 5];
+                      return (
+                        <li key={l} className={id === chosenNext ? s.chosen : undefined}>
+                          <span className={s.layerTag}>{l === 0 ? "emb" : `L${l}`}</span>
+                          <span className={s.tok}>{show(step.lensTexts[l * 5])}</span>
+                          <span className={s.bar} style={{ width: `${step.lensProbs[l * 5] * 100}%` }} />
+                          <span className={s.pct}>{(step.lensProbs[l * 5] * 100).toFixed(0)}%</span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </>
+              ) : (
+                lensOn && <p className={s.hint}>Shown for each word once a story is generated.</p>
+              )}
             </>
           )}
         </aside>
@@ -310,6 +376,7 @@ export default function Lab() {
         {doneReason === "end" && " · the model ended the story"}
         {doneReason === "length" && " · reached the length limit"}
         {doneReason === "stopped" && " · stopped"}
+        {runAblated.length > 0 && ` · switched off: ${runAblated.map(([l, h]) => `L${l + 1}H${h + 1}`).join(", ")}`}
         {engineTps !== null && ` · your browser computed ${engineTps.toFixed(0)} tokens/s (playback is slowed down)`}
         {steps.length > 0 && weights[0] !== undefined &&
           ` · highlighted: attention from “${show(step.text).trim()}”, layer ${layer + 1}, ${head === "all" ? "mean of heads" : `head ${head + 1}`}; strongest ${(strongest * 100).toFixed(0)}%, ${(weights[0] * 100).toFixed(0)}% parked on the start-of-story token`}

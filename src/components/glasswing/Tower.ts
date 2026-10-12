@@ -79,6 +79,7 @@ export class Tower {
   private observer: IntersectionObserver;
   private selectedLayer = 0;
   private selectedHead: number | "all" = "all";
+  private ablated = new Set<string>();
   private reduced: boolean;
   private y0: number;
 
@@ -249,6 +250,11 @@ export class Tower {
     this.camera.updateProjectionMatrix();
   }
 
+  /** Heads switched off for the current run: drawn as dark, unlit orbs. */
+  setAblated(heads: [number, number][]) {
+    this.ablated = new Set(heads.map(([l, h]) => `${l}:${h}`));
+  }
+
   select(layer: number, head: number | "all") {
     this.selectedLayer = layer;
     this.selectedHead = head;
@@ -332,6 +338,12 @@ export class Tower {
       this.heads[l].forEach((s, h) => {
         const focus = reached ? this.headFocus[l][h] : 0.05;
         const chosen = l === this.selectedLayer && (this.selectedHead === "all" || this.selectedHead === h);
+        if (this.ablated.has(`${l}:${h}`)) {
+          s.material.opacity = 0.9;
+          s.scale.setScalar(0.45);
+          s.material.color.set(0x5a2a2a);
+          return;
+        }
         s.material.opacity = 0.25 + 0.75 * focus;
         s.scale.setScalar(0.35 + 0.55 * focus + (chosen ? 0.25 : 0));
         s.material.color.set(chosen ? 0xffffff : 0x9db4ff);

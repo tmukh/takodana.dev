@@ -7,7 +7,7 @@ import type { PostMeta } from "@/lib/posts";
 import s from "./page.module.css";
 import f from "./WritingList.module.css";
 
-const GROUPS = ["All", "Night Sky Digest", "Homelab", "Incidents", "Essays"] as const;
+const GROUPS = ["All", "Night Sky Digest", "glasswing", "Homelab", "Incidents", "Essays"] as const;
 
 export default function WritingList({ published, drafts }: { published: PostMeta[]; drafts: PlannedPost[] }) {
   const [group, setGroup] = useState<(typeof GROUPS)[number]>("All");

@@ -19,7 +19,7 @@ export type PostMeta = {
   title: string;
   date: string; // YYYY-MM-DD
   series: string; // e.g. "Night Sky · M3", "Homelab", "Incident", "Essay"
-  group: "Night Sky Digest" | "Homelab" | "Incidents" | "Essays";
+  group: "Night Sky Digest" | "glasswing" | "Homelab" | "Incidents" | "Essays";
   summary: string;
   readingMinutes: number;
 };

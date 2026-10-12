@@ -116,6 +116,13 @@ export const glasswingMilestones = [
   { id: "M7", done: false, text: "A real small model, served on k3s" },
 ];
 
+// The circuit the M6 analysis found (glasswing/docs/interp/results.json), 0-based [layer, head]:
+// previous-token heads plus the induction head they feed. The lab's "switch off" preset uses it.
+export const glasswingCircuit = {
+  heads: [[2, 2], [2, 0], [3, 3]] as [number, number][],
+  label: "the induction circuit (L3H3, L3H1, L4H4)",
+};
+
 // Measured numbers shown on the glasswing page (glasswing/docs/log.md has the sources).
 export const glasswingStats = {
   params: "15.7M",
@@ -161,7 +168,7 @@ export const experience: Role[] = [
   },
 ];
 
-export type PlannedPost = { series: string; group: "Night Sky Digest" | "Homelab" | "Incidents" | "Essays"; title: string; blurb: string };
+export type PlannedPost = { series: string; group: "Night Sky Digest" | "glasswing" | "Homelab" | "Incidents" | "Essays"; title: string; blurb: string };
 
 // Shown until each one is written as a Markdown file in src/content/posts.
 export const plannedPosts: PlannedPost[] = [

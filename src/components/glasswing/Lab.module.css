@@ -287,3 +287,51 @@
     transition: none;
   }
 }
+
+.pick button.off {
+  color: #ff9d8a;
+  border-color: #5a2a2a;
+  text-decoration: line-through;
+}
+.pick button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.toggle input {
+  accent-color: var(--star);
+}
+.lens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse; /* layer 8 on top, like the tower */
+  gap: 4px;
+}
+.lens li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  overflow: hidden;
+}
+.layerTag {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  color: var(--muted);
+  font-size: 12px;
+}
+.lens .bar {
+  left: 40px;
+}
