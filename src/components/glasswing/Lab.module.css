@@ -1,0 +1,337 @@
+.lab {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 2.4fr) repeat(3, minmax(130px, 1fr)) 90px;
+  gap: 14px 18px;
+  align-items: end;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+.controls input[type="range"] {
+  accent-color: var(--star);
+}
+.controls input:not([type="range"]) {
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--ground);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.prompt input {
+  font-family: var(--font-body), system-ui, sans-serif !important;
+}
+.buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.progress {
+  position: relative;
+  width: min(420px, 100%);
+  height: 38px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.progress div {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent-soft);
+  border-right: 1px solid var(--accent);
+}
+.progress span {
+  position: relative;
+  display: block;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.error {
+  color: #ff9d8a;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+}
+.towerWrap {
+  position: relative;
+  min-height: 560px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: radial-gradient(ellipse at 50% 60%, rgba(157, 180, 255, 0.06), transparent 70%), var(--space);
+  overflow: hidden;
+}
+.tower {
+  display: block;
+  width: 100%;
+  height: 560px;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.placeholder {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  max-width: 380px;
+  height: fit-content;
+  text-align: center;
+  color: var(--muted);
+}
+.legend {
+  position: absolute;
+  left: 14px;
+  bottom: 10px;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.legend div {
+  display: flex;
+  gap: 6px;
+}
+.legend dt,
+.legend dd {
+  margin: 0;
+}
+.gold {
+  color: var(--star);
+}
+.blue {
+  color: #7fa8ff;
+}
+.head {
+  color: var(--accent);
+}
+.strip {
+  color: var(--ink-2);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+.side h3 {
+  margin: 4px 0 0;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+.hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.probs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.probs li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  overflow: hidden;
+}
+.bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent-soft);
+  border-right: 2px solid var(--accent);
+  z-index: 0;
+}
+.tok,
+.pct {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  white-space: pre;
+}
+.pct {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.chosen .bar {
+  background: rgba(255, 210, 122, 0.22);
+  border-right-color: var(--star);
+}
+.chosen .tok::after {
+  content: "  ← chosen";
+  color: var(--star);
+  font-size: 12px;
+}
+.pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pick button {
+  font: inherit;
+  font-size: 13px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+.pick button[aria-pressed="true"] {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.text {
+  min-height: 120px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 19px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+.chip {
+  border-radius: 4px;
+  padding: 2px 0;
+  cursor: default;
+  transition: background-color 120ms;
+  outline: none;
+}
+.given {
+  color: var(--ink-2);
+  text-decoration: underline dotted var(--line-strong);
+  text-underline-offset: 5px;
+}
+.current {
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
+.caret {
+  color: var(--star);
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.meta {
+  margin: -6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.seed input {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .prompt {
+    grid-column: 1 / -1;
+  }
+  .stage {
+    grid-template-columns: 1fr;
+  }
+  .towerWrap,
+  .tower {
+    min-height: 420px;
+    height: 420px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .caret {
+    animation: none;
+  }
+  .chip {
+    transition: none;
+  }
+}
+
+.pick button.off {
+  color: #ff9d8a;
+  border-color: #5a2a2a;
+  text-decoration: line-through;
+}
+.pick button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.toggle input {
+  accent-color: var(--star);
+}
+.lens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse; /* layer 8 on top, like the tower */
+  gap: 4px;
+}
+.lens li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  overflow: hidden;
+}
+.layerTag {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  color: var(--muted);
+  font-size: 12px;
+}
+.lens .bar {
+  left: 40px;
+}

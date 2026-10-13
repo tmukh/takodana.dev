@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# glasswing release assets, fetched and checksum-verified at build time (scripts/fetch-glasswing.mjs)
+/public/glasswing/

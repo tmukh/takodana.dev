@@ -52,6 +52,19 @@ export const worlds: World[] = [
     orbit: { a: 4.8, r: 0.6, moons: 7 },
   },
   {
+    id: "glasswing",
+    label: "glasswing",
+    kind: "ice world · eight moons",
+    color: "#B7E4F2",
+    title: "glasswing",
+    text: "A small language model you can watch think: trained on children's stories, running in your browser on an inference engine written from scratch in Rust. Switch its heads off and watch the story change. Its eight moons are milestones M0 to M7.",
+    links: [
+      { label: "Watch it think", href: "/projects/glasswing/" },
+      { label: "Live models", href: "https://glasswing.takodana.dev" },
+    ],
+    orbit: { a: 6.0, r: 0.45, moons: 8 },
+  },
+  {
     id: "writing",
     label: "Build logs",
     kind: "asteroid belt",
@@ -105,6 +118,34 @@ export const nightSkyMilestones = [
   { id: "M6", done: false, text: "Experiments and write-up" },
 ];
 
+export const glasswingMilestones = [
+  { id: "M0", done: true, text: "Rust workspace, CI" },
+  { id: "M1", done: true, text: "BPE tokenizer, reference model, golden fixtures" },
+  { id: "M2", done: true, text: "Rust forward pass, parity with PyTorch" },
+  { id: "M3", done: true, text: "Trained on TinyStories, KV cache, sampling" },
+  { id: "M4", done: true, text: "WebAssembly engine, f16 weights" },
+  { id: "M5", done: true, text: "This visualization" },
+  { id: "M6", done: true, text: "Interpretability: ablation, logit lens, an induction circuit" },
+  { id: "M7", done: true, text: "SmolLM2-135M served on k3s, public" },
+];
+
+// The circuit the M6 analysis found (glasswing/docs/interp/results.json), 0-based [layer, head]:
+// previous-token heads plus the induction head they feed. The lab's "switch off" preset uses it.
+export const glasswingCircuit = {
+  heads: [[2, 2], [2, 0], [3, 3]] as [number, number][],
+  label: "the induction circuit (L3H3, L3H1, L4H4)",
+};
+
+// Measured numbers shown on the glasswing page (glasswing/docs/log.md has the sources).
+export const glasswingStats = {
+  params: "15.7M",
+  valLoss: "1.18",
+  trainTokens: "1.3B",
+  trainHours: "3.6",
+  download: "31.5 MB",
+  nativeTps: "~300",
+};
+
 export type Role = { when: string; title: string; text: string };
 
 export const experience: Role[] = [
@@ -140,7 +181,7 @@ export const experience: Role[] = [
   },
 ];
 
-export type PlannedPost = { series: string; group: "Night Sky Digest" | "Homelab" | "Incidents" | "Essays"; title: string; blurb: string };
+export type PlannedPost = { series: string; group: "Night Sky Digest" | "glasswing" | "Homelab" | "Incidents" | "Essays"; title: string; blurb: string };
 
 // Shown until each one is written as a Markdown file in src/content/posts.
 export const plannedPosts: PlannedPost[] = [
