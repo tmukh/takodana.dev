@@ -85,6 +85,6 @@ In the [lab](/projects/glasswing/#lab), *switch off the induction circuit* zeroe
 
 ## What comes next
 
-This is the last part about the model itself. Part 6 is about putting the same engine in front of the public: serving a real model, SmolLM2, to anyone on the internet without a login, and the limits that keep it alive.
+This is the last part about the model itself. [Part 6](/writing/glasswing-6-serving-strangers/) is about putting the same engine in front of the public: serving a real model, SmolLM2, to anyone on the internet without a login, and the limits that keep it alive.
 
 *Built with [Claude Code](https://claude.com/claude-code) as a pair programmer; I directed the design, reviewed the code and ran the experiments. Code, analysis and data: [github.com/tmukh/glasswing](https://github.com/tmukh/glasswing).*
