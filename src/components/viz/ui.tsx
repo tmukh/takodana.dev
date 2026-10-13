@@ -36,8 +36,8 @@ export function Figure({
             <table>
               <thead>
                 <tr>
-                  {numbers.head.map((h) => (
-                    <th key={h}>{h}</th>
+                  {numbers.head.map((h, i) => (
+                    <th key={i}>{h}</th>
                   ))}
                 </tr>
               </thead>
