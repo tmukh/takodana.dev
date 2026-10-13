@@ -14,4 +14,9 @@ export const figures: Record<string, ReturnType<typeof lazy>> = {
   "rope-dial": lazy(() => import("./glasswing/RopeDial")),
   "residual-stream": lazy(() => import("./glasswing/ResidualStream")),
   neurons: lazy(() => import("./glasswing/Neurons")),
+  "loss-toy": lazy(() => import("./glasswing/LossToy")),
+  "descent-toy": lazy(() => import("./glasswing/DescentToy")),
+  "lr-schedule": lazy(() => import("./glasswing/LrSchedule")),
+  "training-run": lazy(() => import("./glasswing/TrainingRun")),
+  sampler: lazy(() => import("./glasswing/Sampler")),
 };
