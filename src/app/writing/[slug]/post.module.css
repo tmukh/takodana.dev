@@ -96,3 +96,19 @@
   max-width: 100%;
   height: auto;
 }
+
+/* Interactive figures break out of the 720 px text column on wide screens. */
+.body :global(figure.viz) {
+  width: min(960px, calc(100vw - 32px));
+  margin: 32px 0 32px 50%;
+  transform: translateX(-50%);
+}
+.body :global(.viz-fallback),
+.body :global(.viz-loading) {
+  margin: 0;
+  padding: 18px 20px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 15px;
+}
