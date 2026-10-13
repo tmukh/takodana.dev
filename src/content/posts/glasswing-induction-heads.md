@@ -1,16 +1,14 @@
 ---
 title: "Finding an induction head in a 16M-parameter model I can watch think"
 date: 2026-10-13
-series: "glasswing · M6"
+series: "glasswing explained · 5"
 group: "glasswing"
 summary: "I trained a small language model, rebuilt it in Rust for the browser, and went looking for the circuit that lets it copy names. Two layers, three heads, and the moment the answer appears."
 ---
 
-[glasswing](/projects/glasswing/) is a small language model you can watch while it writes: 15.7 million parameters, trained on children's stories, running in your browser on an inference engine written from scratch in Rust. This post is about the part I was most curious about: once you can see every head and neuron, can you find the machinery behind something the model actually does?
+[glasswing](/projects/glasswing/) is a small language model you can watch while it writes. The first four parts of this series explained how it reads ([part 1](/writing/glasswing-1-letters-to-numbers/)), what happens inside ([part 2](/writing/glasswing-2-inside-the-model/)), how it was trained ([part 3](/writing/glasswing-3-teaching-it-to-write/)) and how it runs in your browser ([part 4](/writing/glasswing-4-in-your-browser/)). This part is about what I was most curious about: once you can see every head and neuron, can you find the machinery behind something the model actually does, and prove the model uses it?
 
-## The model, briefly
-
-It's a Llama-style transformer (RMSNorm, rotary positions, SwiGLU): 8 layers, 6 attention heads each, 1,024 MLP neurons per layer. I trained it with PyTorch on one RTX 3060 Ti for 3.6 hours, about 1.3 billion tokens of [TinyStories](https://arxiv.org/abs/2305.07759), to a validation loss of 1.18. The browser runs a separate implementation of the same model in plain Rust, compiled to WebAssembly; a test in CI compares every intermediate tensor against PyTorch, so I know the thing you watch is the thing I trained.
+In short: glasswing has 8 layers with 6 attention heads each. It's a Llama-style transformer with 15.7 million parameters, trained on [TinyStories](https://arxiv.org/abs/2305.07759) to a validation loss of 1.18.
 
 Children's stories repeat themselves. Names come back sentence after sentence: *Lily and Ben were playing in the park. Lily gave the ball to…* The model gets that kind of prompt right in all 180 of my test cases (three templates, 60 name pairs). To do it, it has to look back, find the other name, and copy it. That smells like an **induction head**.
 
@@ -21,11 +19,17 @@ An induction head completes patterns of the form *A B … A → B*: when the cur
 1. a **previous-token head** in an earlier layer writes "the token before me was X" into each position;
 2. the **induction head** in a later layer searches for positions whose previous token matches the current token, which lands it exactly one step after the earlier occurrence.
 
+```figure
+induction-explainer
+```
+
 ## Finding them
 
 The standard test is to feed the model a random sequence of tokens, then the same sequence again. Nothing in the first half helps predict it except copying, so a head that attends from each token in the second copy to *the token after its first occurrence* is doing induction. I measured that for all 48 heads, and the same for "attends to the previous token".
 
-![Induction and previous-token scores for every head](/writing/glasswing/heads.png)
+```figure
+head-map
+```
 
 One head stands out: **L4H4**, layer 4 head 4, with an induction score of 0.26. No other head gets above 0.05. And right before it, in layer 3, sit the two strongest previous-token heads: L3H3 puts 84% of its attention on the previous token, L3H1 43%. That's the two-step circuit from the paper, found in a 16M-parameter model that only ever read children's stories.
 
@@ -40,7 +44,9 @@ One head stands out: **L4H4**, layer 4 head 4, with an induction score of 0.26. 
 
 Seeing a pattern in attention weights isn't proof the model uses it. So I switched the heads off (zero-ablation: the head's output is replaced with zeros before it's added back) and measured the loss. As a control, I switched off the same number of randomly chosen heads.
 
-![Loss with the induction heads or random heads switched off](/writing/glasswing/ablation.png)
+```figure
+ablation-chart
+```
 
 The cleanest test is repeated text: a 60-token window of a real story, then the same window again. The second copy is much easier (loss 1.40 instead of 1.94), because the model can copy. Switching off the circuit (L4H4, L3H3, L3H1) raises the second copy to 1.59; switching off three random heads, to 1.42. Three heads out of 48 account for about a third of the copying advantage; random ones for almost none.
 
@@ -52,13 +58,17 @@ The name task agrees: with the circuit off, the model still names the right pers
 
 Back to *Lily and Ben were playing in the park. Lily gave the ball to…* To find where the answer is computed, I used **activation patching**. Take a corrupted prompt where the second subject is swapped (*…Ben gave the ball to*, so the right answer flips to Lily), run it, and at one layer and one position paste in the residual stream from the clean run. If that one patch brings the clean answer back, the information that decides the answer lived right there.
 
-![Share of the clean answer restored by patching each layer and position](/writing/glasswing/patching.png)
+```figure
+patching-map
+```
 
 Two clean bands. In the early layers the only position that matters is the second *A*, the subject of the second sentence: patch it and the clean answer comes back completely. From layer 5 on, that moves to the last position, *to*: 0.23 of the answer restored after layer 5, 0.60 after layer 6, 0.92 after layer 7. Something in layers 5 to 7 reads the subject and moves the information to where the next word is predicted. Ablating heads one at a time points the same way: the two that hurt the name task most are L5H2 and L6H5.
 
 The **logit lens** says the same thing from another angle. Pass the residual stream after each layer through the model's final norm and output layer, as if the model stopped there, and read off the probability of the right name:
 
-![Probability of the right name after each layer](/writing/glasswing/lens.png)
+```figure
+lens-line
+```
 
 Through layer 4 the right name has essentially zero probability. After layer 5 it jumps to 0.36, and it reaches 0.81 at the output. The answer is assembled in layer 5, where patching found it arriving at the last position.
 
@@ -68,8 +78,13 @@ In the [lab](/projects/glasswing/#lab), *switch off the induction circuit* zeroe
 
 ## What I'd check next
 
+
 - **Zero-ablation is crude.** Replacing a head's output with its *average* output would separate "this head is needed" from "an output of zero is out of distribution".
 - **One checkpoint, a few templates.** Watching the induction heads appear during training (they often form suddenly, in a phase change) would make a better story than one snapshot.
 - **The heads that matter for names but aren't induction heads** (L5H2, L6H5 and L2H3) are the next thing to look at: something moves the name to the last position, and patching says it happens in layers 5 to 7.
+
+## What comes next
+
+This is the last part about the model itself. Part 6 is about putting the same engine in front of the public: serving a real model, SmolLM2, to anyone on the internet without a login, and the limits that keep it alive.
 
 *Built with [Claude Code](https://claude.com/claude-code) as a pair programmer; I directed the design, reviewed the code and ran the experiments. Code, analysis and data: [github.com/tmukh/glasswing](https://github.com/tmukh/glasswing).*
