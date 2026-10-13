@@ -52,6 +52,19 @@ export const worlds: World[] = [
     orbit: { a: 4.8, r: 0.6, moons: 7 },
   },
   {
+    id: "glasswing",
+    label: "glasswing",
+    kind: "ice world · eight moons",
+    color: "#B7E4F2",
+    title: "glasswing",
+    text: "A small language model you can watch think: trained on children's stories, running in your browser on an inference engine written from scratch in Rust. Switch its heads off and watch the story change. Its eight moons are milestones M0 to M7.",
+    links: [
+      { label: "Watch it think", href: "/projects/glasswing/" },
+      { label: "Live models", href: "https://glasswing.takodana.dev" },
+    ],
+    orbit: { a: 6.0, r: 0.45, moons: 8 },
+  },
+  {
     id: "writing",
     label: "Build logs",
     kind: "asteroid belt",
@@ -112,8 +125,8 @@ export const glasswingMilestones = [
   { id: "M3", done: true, text: "Trained on TinyStories, KV cache, sampling" },
   { id: "M4", done: true, text: "WebAssembly engine, f16 weights" },
   { id: "M5", done: true, text: "This visualization" },
-  { id: "M6", done: false, text: "Interpretability: ablation, logit lens, a circuit" },
-  { id: "M7", done: false, text: "A real small model, served on k3s" },
+  { id: "M6", done: true, text: "Interpretability: ablation, logit lens, an induction circuit" },
+  { id: "M7", done: true, text: "SmolLM2-135M served on k3s, public" },
 ];
 
 // The circuit the M6 analysis found (glasswing/docs/interp/results.json), 0-based [layer, head]:
@@ -126,9 +139,9 @@ export const glasswingCircuit = {
 // Measured numbers shown on the glasswing page (glasswing/docs/log.md has the sources).
 export const glasswingStats = {
   params: "15.7M",
-  valLoss: "TBD",
+  valLoss: "1.18",
   trainTokens: "1.3B",
-  trainHours: "TBD",
+  trainHours: "3.6",
   download: "31.5 MB",
   nativeTps: "~300",
 };

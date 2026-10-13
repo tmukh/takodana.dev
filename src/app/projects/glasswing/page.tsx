@@ -58,6 +58,12 @@ export default function Glasswing() {
             <a className="button primary" href="#lab">
               Try it
             </a>
+            <Link className="button" href="/writing/glasswing-induction-heads/">
+              Write-up: the circuit inside
+            </Link>
+            <a className="button" href="https://glasswing.takodana.dev">
+              Live models (SmolLM2 too)
+            </a>
             <a className="button" href="https://github.com/tmukh/glasswing">
               Repository
             </a>
@@ -101,6 +107,29 @@ export default function Glasswing() {
               </Fragment>
             ))}
           </div>
+        </section>
+
+        <section aria-labelledby="circuit" className={s.section} style={{ maxWidth: 860 }}>
+          <h2 id="circuit" className={s.h2}>The circuit inside</h2>
+          <p className={s.sectionText}>
+            The model learned an <strong>induction circuit</strong>: two previous-token heads in layer 3 (L3H3, L3H1) feed
+            an induction head in layer 4 (L4H4), which looks up what came after the last occurrence of the current word.
+            Switch the three off and copying gets measurably worse while three random heads barely matter; in a name task,
+            activation patching shows the name moving to the last position in layers 5 to 7, the same layer the logit lens
+            says the answer appears. The preset in the lab above switches exactly these heads off.{" "}
+            <Link href="/writing/glasswing-induction-heads/">Read the write-up</Link>.
+          </p>
+        </section>
+
+        <section aria-labelledby="serve" className={s.section} style={{ maxWidth: 860 }}>
+          <h2 id="serve" className={s.h2}>The same engine, serving a real model</h2>
+          <p className={s.sectionText}>
+            The engine also loads Hugging Face checkpoints: SmolLM2-135M-Instruct runs on it at{" "}
+            <a href="https://glasswing.takodana.dev">glasswing.takodana.dev</a>, served from my k3s cluster through the
+            Cloudflare Tunnel, with greedy answers identical to the reference implementation. It&apos;s public without a
+            login, so it limits itself: a token bucket per visitor, two generations at a time, 256 tokens per answer,
+            prompts never logged, time to first token and tokens/s in Prometheus.
+          </p>
         </section>
 
         <section aria-labelledby="broke" className={s.section} style={{ maxWidth: 860 }}>

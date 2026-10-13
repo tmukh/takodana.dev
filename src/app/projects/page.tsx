@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "@/components/SiteHeader";
 import s from "@/components/page.module.css";
-import { nightSkyMilestones } from "@/data/site";
+import { glasswingMilestones, nightSkyMilestones } from "@/data/site";
 
 export const metadata: Metadata = { title: "Projects" };
 
@@ -43,6 +43,34 @@ export default function Projects() {
             <Link href="/projects/night-sky-digest/">Case study →</Link>
             <a href="https://digest.takodana.dev">Live site</a>
             <a href="https://github.com/tmukh/night-sky-digest">Repository</a>
+          </div>
+        </article>
+
+        <article aria-labelledby="gw" className={`card ${s.cardBody} ${s.section}`} style={{ padding: 36 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", alignItems: "baseline", justifyContent: "space-between" }}>
+            <h2 id="gw" style={{ fontSize: 36, fontStretch: "110%" }}>glasswing</h2>
+            <span className={`${s.status} status-ok`}>● live in your browser and at glasswing.takodana.dev</span>
+          </div>
+          <p style={{ fontSize: 18, maxWidth: 820 }}>
+            A 15.7M-parameter language model trained on children&apos;s stories, running in the browser on an inference
+            engine written from scratch in Rust and checked against PyTorch tensor by tensor in CI. You can watch every
+            layer while it writes, switch attention heads off, and see the induction circuit it learned.
+          </p>
+          <ol aria-label="Milestones" className={s.milestones}>
+            {glasswingMilestones.map((m) => (
+              <li key={m.id} className={m.done ? undefined : s.next}>
+                <span className={s.status} style={{ fontSize: 12, color: m.done ? "var(--ok)" : "var(--muted)" }}>
+                  {m.id} · {m.done ? "done" : "next"}
+                </span>
+                {m.text}
+              </li>
+            ))}
+          </ol>
+          <div className={s.linkRow}>
+            <Link href="/projects/glasswing/">Watch it think →</Link>
+            <Link href="/writing/glasswing-induction-heads/">Write-up</Link>
+            <a href="https://glasswing.takodana.dev">Live models</a>
+            <a href="https://github.com/tmukh/glasswing">Repository</a>
           </div>
         </article>
 
