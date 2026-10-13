@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter, SiteHeader } from "@/components/SiteHeader";
+import PostFigures from "@/components/viz/PostFigures";
 import { allPosts, renderPost } from "@/lib/posts";
 import styles from "./post.module.css";
 
@@ -38,6 +39,8 @@ export default async function Post({ params }: PageProps<"/writing/[slug]">) {
           <p className={styles.summary}>{meta.summary}</p>
           {/* Our own Markdown, rendered at build time from files in this repository. */}
           <div className={styles.body} dangerouslySetInnerHTML={{ __html: html }} />
+          {/* Interactive figures, mounted into the <figure data-viz> placeholders above. */}
+          {html.includes("data-viz") && <PostFigures />}
         </article>
       </main>
       <SiteFooter />
