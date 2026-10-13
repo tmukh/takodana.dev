@@ -20,6 +20,15 @@ const pipeline = [
   { name: "Next token", text: "the stream is scored against all 4,096 tokens; temperature and top-p pick one" },
 ];
 
+const series = [
+  ["glasswing-1-letters-to-numbers", "How a language model reads", "Bytes, byte-pair encoding replayed on your own sentence, and a map of the model's words."],
+  ["glasswing-2-inside-the-model", "What happens inside", "Attention, the causal mask, real attention heads, rotary positions, neurons with a job."],
+  ["glasswing-3-teaching-it-to-write", "Teaching it to write", "The loss, walking downhill, and the training run checkpoint by checkpoint."],
+  ["glasswing-4-in-your-browser", "A model in your browser", "Rebuilding it in Rust, checking every step against PyTorch, and making it fast."],
+  ["glasswing-induction-heads", "The circuit inside", "Finding an induction circuit, and proving the model uses it."],
+  ["glasswing-6-serving-strangers", "Serving a model to strangers", "SmolLM2 on the same engine, rate limits, queues, and a live demo."],
+];
+
 const broke = [
   [
     "A loss that looked too good.",
@@ -58,8 +67,8 @@ export default function Glasswing() {
             <a className="button primary" href="#lab">
               Try it
             </a>
-            <Link className="button" href="/writing/glasswing-induction-heads/">
-              Write-up: the circuit inside
+            <Link className="button" href="/writing/glasswing-1-letters-to-numbers/">
+              Read the series
             </Link>
             <a className="button" href="https://glasswing.takodana.dev">
               Live models (SmolLM2 too)
@@ -144,6 +153,27 @@ export default function Glasswing() {
               </li>
             ))}
           </ul>
+        </section>
+
+        <section aria-labelledby="series" className={s.section} style={{ maxWidth: 860 }}>
+          <h2 id="series" className={s.h2}>Read the series</h2>
+          <p className={s.sectionText}>
+            Six posts explain glasswing from start to end for readers who have never looked inside a language model, each
+            with interactive figures built from the real model.
+          </p>
+          <ol className={s.rows}>
+            {series.map(([slug, title, text], i) => (
+              <li key={slug} style={{ display: "block", padding: "16px 0" }}>
+                <span className={s.status} style={{ fontSize: 12, color: "var(--muted)" }}>
+                  part {i + 1}
+                </span>{" "}
+                <Link href={`/writing/${slug}/`}>
+                  <strong>{title}</strong>
+                </Link>{" "}
+                <span style={{ color: "var(--ink-2)" }}>{text}</span>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section aria-labelledby="ms" className={s.section}>

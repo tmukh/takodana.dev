@@ -29,4 +29,9 @@ export const figures: Record<string, ReturnType<typeof lazy>> = {
   "ablation-chart": lazy(() => import("./glasswing/AblationChart")),
   "patching-map": lazy(() => import("./glasswing/PatchingMap")),
   "lens-line": lazy(() => import("./glasswing/LensLine")),
+  "request-path": lazy(() => import("./glasswing/RequestPath")),
+  "live-api": lazy(() => import("./glasswing/LiveApi")),
+  "token-bucket": lazy(() => import("./glasswing/TokenBucket")),
+  "queue-sim": lazy(() => import("./glasswing/QueueSim")),
+  "time-anatomy": lazy(() => import("./glasswing/TimeAnatomy")),
 };
