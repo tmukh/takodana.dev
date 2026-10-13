@@ -24,4 +24,9 @@ export const figures: Record<string, ReturnType<typeof lazy>> = {
   "float-bits": lazy(() => import("./glasswing/FloatBits")),
   "speed-ladder": lazy(() => import("./glasswing/SpeedLadder")),
   "dot-lanes": lazy(() => import("./glasswing/DotLanes")),
+  "induction-explainer": lazy(() => import("./glasswing/InductionExplainer")),
+  "head-map": lazy(() => import("./glasswing/HeadMap")),
+  "ablation-chart": lazy(() => import("./glasswing/AblationChart")),
+  "patching-map": lazy(() => import("./glasswing/PatchingMap")),
+  "lens-line": lazy(() => import("./glasswing/LensLine")),
 };
