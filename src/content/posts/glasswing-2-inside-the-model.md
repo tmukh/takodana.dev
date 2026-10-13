@@ -87,6 +87,6 @@ At *to*, the guesses tell a story. Layers 1 and 2 expect a verb (*to play*, *to 
 
 ## What comes next
 
-All of this only works because of the numbers inside the model: 15.7 million of them, in the embedding table, the attention heads and the neurons. None of them were set by hand. Part 3 is about training: how 3.6 hours on one graphics card turned random numbers into a model that writes stories, and what it wrote along the way.
+All of this only works because of the numbers inside the model: 15.7 million of them, in the embedding table, the attention heads and the neurons. None of them were set by hand. [Part 3](/writing/glasswing-3-teaching-it-to-write/) is about training: how 3.6 hours on one graphics card turned random numbers into a model that writes stories, and what it wrote along the way.
 
 *Built with [Claude Code](https://claude.com/claude-code) as a pair programmer; I directed the design, reviewed the code and ran the experiments. Code and data: [github.com/tmukh/glasswing](https://github.com/tmukh/glasswing).*

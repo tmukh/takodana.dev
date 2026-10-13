@@ -83,10 +83,14 @@
   flex-direction: column;
   gap: 4px;
   min-width: 220px;
-  flex: 1 1 260px;
   font-size: 13px;
   color: var(--muted);
   font-family: var(--font-mono), monospace;
+}
+/* Side by side in a control row, sliders share the width. (Not in column layouts, where a flex
+   basis would become a height.) */
+.controls .slider {
+  flex: 1 1 260px;
 }
 .slider b {
   color: var(--ink);
