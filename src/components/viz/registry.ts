@@ -19,4 +19,9 @@ export const figures: Record<string, ReturnType<typeof lazy>> = {
   "lr-schedule": lazy(() => import("./glasswing/LrSchedule")),
   "training-run": lazy(() => import("./glasswing/TrainingRun")),
   sampler: lazy(() => import("./glasswing/Sampler")),
+  "parity-check": lazy(() => import("./glasswing/ParityCheck")),
+  "kv-cache": lazy(() => import("./glasswing/KvCache")),
+  "float-bits": lazy(() => import("./glasswing/FloatBits")),
+  "speed-ladder": lazy(() => import("./glasswing/SpeedLadder")),
+  "dot-lanes": lazy(() => import("./glasswing/DotLanes")),
 };

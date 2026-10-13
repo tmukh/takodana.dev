@@ -64,6 +64,6 @@ Notice the prompts where the model is sure (*Lily gave the ball to*: Ben, 95%) a
 
 ## What comes next
 
-At this point there is a trained model: a 63 MB file of numbers, and a Python program that knows how to run it. Part 4 is about running it somewhere else entirely: in your browser, on an engine written from scratch in Rust, and how I made sure that engine computes exactly the same thing as the original.
+At this point there is a trained model: a 63 MB file of numbers, and a Python program that knows how to run it. [Part 4](/writing/glasswing-4-in-your-browser/) is about running it somewhere else entirely: in your browser, on an engine written from scratch in Rust, and how I made sure that engine computes exactly the same thing as the original.
 
 *Built with [Claude Code](https://claude.com/claude-code) as a pair programmer; I directed the design, reviewed the code and ran the experiments. Code and data: [github.com/tmukh/glasswing](https://github.com/tmukh/glasswing).*
